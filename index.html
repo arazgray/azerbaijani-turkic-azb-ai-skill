@@ -25,6 +25,14 @@
   .ok { color:#1c6b1c; font-weight:bold; } .bad { color:var(--accent); font-weight:bold; }
   footer { max-width:960px; margin:3rem auto 0; border-top:3px double var(--accent); padding-top:1rem; color:#555; font-size:.9rem; }
   .grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:1rem; }
+  .btn-row { display:flex; flex-wrap:wrap; gap:.8rem; margin:1.5rem 0 1rem; }
+  .btn { display:inline-block; font-family:inherit; font-size:1.1rem; font-weight:bold;
+         padding:.9rem 1.6rem; border-radius:10px; text-decoration:none; border:2px solid var(--accent);
+         background:var(--accent); color:#fff; }
+  .btn:hover { opacity:.9; }
+  .btn.secondary { background:#fff; color:var(--accent); }
+  .btn.small { font-size:.95rem; padding:.6rem 1.1rem; }
+  .meta { font-size:.9rem; color:#555; }
 </style>
 </head>
 <body>
@@ -33,8 +41,47 @@
   <p>Arabic-script orthography skill — everything the AI skill knows, presented for humans.</p>
   <p>Authority: <em>Türk Dili Yazı Quralları</em>, First &amp; Second Türk Dili Orthography Seminars,
      Tehran, final review 5 Oct 2001 (13 Mehr 1380), Dr. Javad Heyat.</p>
+  <p class="meta">Skill: <code>south-azerbaijani-arabic-script</code> · License: MIT · BCP-47: <code>az</code> (parent) / <code>azb</code> (South, RTL, Arab) / <code>azj</code> (North, LTR)</p>
+
+  <div class="btn-row">
+    <a class="btn" href="https://github.com/arazgray/azerbaijani-turkic-azb-ai-skill/">GitHub Repo</a>
+    <a class="btn secondary" href="https://raw.githubusercontent.com/arazgray/azerbaijani-turkic-azb-ai-skill/main/SKILL.md" download>Download SKILL.md</a>
+    <a class="btn secondary" href="https://github.com/arazgray/azerbaijani-turkic-azb-ai-skill/archive/refs/heads/main.zip">Download Skill (.zip)</a>
+  </div>
+  <div class="btn-row">
+    <a class="btn small secondary" href="https://github.com/arazgray/azerbaijani-turkic-azb-ai-skill/blob/main/README.md">README.md</a>
+    <a class="btn small secondary" href="https://github.com/arazgray/azerbaijani-turkic-azb-ai-skill/blob/main/SKILL.md">SKILL.md on GitHub</a>
+    <a class="btn small secondary" href="Yazı-Quralları-AZB.html">Yazı Quralları source</a>
+  </div>
+  <p class="meta">Install: clone the repo or unzip it into your agent skills folder, e.g.
+  <code>git clone https://github.com/arazgray/azerbaijani-turkic-azb-ai-skill.git</code></p>
 </header>
 <main>
+
+<h2>0. About this project (from README.md)</h2>
+<div class="card">
+<p><span class="azb" lang="azb">آذربایجان تۆرکجه‌سی (آذربایجان تۆرکجه‌سینین عرب کؤکلو الیفباسی) دۆزگۆن یازی قایدالارینین AI باشاریغی</span></p>
+<p>This repo provides a complete instruction set (<code>SKILL.md</code>) that makes an AI write and normalize
+South Azerbaijani Turkic (<code>azb</code>) in the Arabic-rooted Turk alphabet, exactly as decided at the
+2001 Tehran Arabic-script Turk alphabet seminar led by Dr. Javad Heyat.</p>
+<ul>
+  <li><strong>Exact Unicode vowel mapping:</strong> correct initial/medial/final forms —
+      <span class="azb">وْ</span> (O), <span class="azb">ۇ</span> (U), <span class="azb">ؤ</span> (Ö),
+      <span class="azb">ۆ</span> (Ü), <span class="azb">ئ</span> (E), and the <span class="azb">ؽ</span> (Iı) vs
+      <span class="azb">ی</span> (İ) distinction — so LLMs stop using lookalike letters.</li>
+  <li><strong>Context-aware vowels:</strong> standard running text by default; Iı clarification only for teaching / dictionary / folklore / disambiguation.</li>
+  <li><strong>Consonant preservation:</strong> original Arabic consonants (<span class="azb">ع ط ص</span> etc.) kept in Arabic-origin words, personal names and frozen phrases; never phoneticized into native Turkic letters.</li>
+  <li><strong>Yumşaq-g + intervocalic k→g:</strong> closed-class rules only (§3/5).</li>
+  <li><strong>Ə / E syllable &amp; morphology rules,</strong> ZWNJ (U+200C) suffix rules, <code>می/مو</code> and <code>دا/ده</code> handling, hamza / tashdid / tanvin, and SP/ST prothesis with <span class="azb">ای</span>.</li>
+</ul>
+<p>Why it matters: consistent cross-platform text, standard input logic for custom iOS keyboards,
+and letter normalization / classification for dictionaries such as “Erk Sözlüğü”.</p>
+<p>Culture: Azerbaijani Turkic is an Oghuz Turkic language with deep literature — from Dede Qorqud to
+Fuzuli, Nasimi, Shah Ismail Khatai and Mohammad-Hossein Shahriar. Its sound harmony and word-building power
+make it poetic and expressive.</p>
+<p class="meta">Note from README: that article itself was written entirely by Google Gemini following
+<strong>SKILL.md</strong> — proof that the rules work for modern AI and digital platforms.</p>
+</div>
 
 <h2>1. Language codes</h2>
 <table>
@@ -46,9 +93,18 @@
 <div class="warn"><strong>Only these three codes exist.</strong> Never use
 <code>az-Arab</code>, <code>az-Iran</code>, <code>az_IR</code>, <code>azb-Arab</code>,
 <code>azb-Iran</code> or any other known or unknown variant — convert them to
-<code>az</code> / <code>azj</code> / <code>azb</code>.</div>
+<code>az</code> / <code>azj</code> / <code>azb</code>.
+<code>azb</code> text is RTL; English, Persian, code and URLs keep their own direction.
+If the user starts in Arabic-script Azerbaijani, treat it as <code>azb</code> — do not ask North vs South.</div>
 
-<h2>2. Names in every context</h2>
+<h2>2. Alphabet &amp; language names (seminar §1 + skill metadata)</h2>
+<div class="card">
+<p>Alphabet name: <strong><span class="azb" lang="azb">تۆرک الیفباسی</span></strong>.
+When a contrast is needed, <strong><span class="azb" lang="azb">عرب کؤکلو تۆرک الیفباسی</span></strong> is also allowed.</p>
+<p>Language name: <strong><span class="azb" lang="azb">آذربایجان تۆرکجه‌سی</span></strong>.
+When a contrast is needed, <strong><span class="azb" lang="azb">عرب الیفباسیله یازیلان آذربایجان تۆرکجه‌سی</span></strong> is also allowed.</p>
+<p>Short name: <span class="azb" lang="azb">تۆرکجه</span>.</p>
+</div>
 
 <h3>2.1 English</h3>
 <table>
@@ -62,8 +118,8 @@
 <h3>2.2 Persian</h3>
 <table>
   <tr><th>South (<code>azb</code>)</th><th>North (<code>azj</code>)</th><th>Türkiye's language</th></tr>
-  <tr><td><span class="azb">ترکی آذربایجانی</span><br>contrast: <span class="azb">ترکی آذربایجانی جنوبی</span><br>script: <span class="azb">ترکی آذربایجانی (عربی)</span></td>
-      <td><span class="azb">ترکی آذربایجانی</span><br>contrast: <span class="azb">ترکی آذربایجانی شمالی</span><br>script: <span class="azb">ترکی آذربایجانی (لاتین)</span></td>
+  <tr><td><span class="azb">ترکی آذربایجانی جنوبی</span><br>script: <span class="azb">ترکی آذربایجانی (با الفبای عربی)</span></td>
+      <td><span class="azb">ترکی آذربایجانی شمالی</span><br>script: <span class="azb">ترکی آذربایجانی (با الفبای لاتین)</span></td>
       <td><span class="azb">ترکی استانبولی</span></td></tr>
 </table>
 <p>Never use; convert on sight: <span class="azb">آذری، ترکی، تورکی، ترکی تبریز</span>.</p>
@@ -85,26 +141,61 @@
       <td><span class="azb" lang="azb">تۆرکیه تۆرکجه‌سی</span></td></tr>
 </table>
 <p>Never use; convert on sight: <span class="azb">تورکو، تۆرکۆ، آذری، تبریز دیلی</span>.</p>
-<p>There is <strong>no separate alphabet name</strong> — the script is referenced only through the names above.</p>
 
-<h2>3. The South alphabet (9 vowels + consonants)</h2>
+<h2>3. The South alphabet — exact glyphs, never substitute</h2>
+<p>Copy these codepoints. Models routinely emit the wrong lookalikes. A word-initial vowel <strong>must</strong> use the initial carrier.
+Wrong: <span class="azb">ؤلکه، ئل، ئو، ۇجوز</span>. Right: <span class="azb" lang="azb">اؤلکه، ائل، ائو، اۇجوز</span>.</p>
 <table>
-  <tr><th>Latin</th><th>Arabic forms</th><th>Unicode</th><th>Example</th></tr>
-  <tr><td>A a</td><td><span class="azb">آ / ا</span></td><td>U+0622 / U+0627</td><td><span class="azb" lang="azb">آتا</span></td></tr>
-  <tr><td>Ə ə</td><td><span class="azb">ا / ه</span> (initial / morpheme-final; omitted mid-morpheme)</td><td>U+0627 / U+0647</td><td><span class="azb" lang="azb">ال، دده</span></td></tr>
-  <tr><td>E e</td><td><span class="azb">ائ / ئ</span></td><td>U+0626</td><td><span class="azb" lang="azb">ائو</span></td></tr>
-  <tr><td>I ı</td><td><span class="azb">اؽ / ؽ</span></td><td>U+063D</td><td><span class="azb" lang="azb">قؽز</span></td></tr>
-  <tr><td>İ i</td><td><span class="azb">ای / ی</span></td><td>U+06CC</td><td><span class="azb" lang="azb">ایکی</span></td></tr>
-  <tr><td>O o</td><td><span class="azb">اوْ / وْ</span> (waw + sukun)</td><td>U+0648 + U+0652</td><td><span class="azb" lang="azb">اوْغوز</span></td></tr>
-  <tr><td>Ö ö</td><td><span class="azb">اؤ / ؤ</span></td><td>U+0624</td><td><span class="azb" lang="azb">اؤرنک</span></td></tr>
-  <tr><td>U u</td><td><span class="azb">اۇ / ۇ</span></td><td>U+06C7</td><td><span class="azb" lang="azb">اۇجوز</span></td></tr>
-  <tr><td>Ü ü</td><td><span class="azb">اۆ / ۆ</span></td><td>U+06C6</td><td><span class="azb" lang="azb">اۆچ</span></td></tr>
+  <tr><th>Phoneme</th><th>Initial</th><th>Else</th><th>Codepoints</th><th>Examples</th></tr>
+  <tr><td>A a</td><td><span class="azb">آ</span></td><td><span class="azb">ا</span></td><td>U+0622 / U+0627</td><td><span class="azb" lang="azb">آتا، آدا، آغیز</span></td></tr>
+  <tr><td>O o</td><td><span class="azb">اوْ</span></td><td><span class="azb">وْ</span></td><td>WAW+SUKUN U+0648 U+0652</td><td><span class="azb" lang="azb">اوْغوز، سوْن، دوْن</span></td></tr>
+  <tr><td>U u</td><td><span class="azb">اۇ</span></td><td><span class="azb">ۇ</span></td><td>U+06C7</td><td><span class="azb" lang="azb">اۇجوز، بۇروق، دۇز</span></td></tr>
+  <tr><td>Ə ə</td><td><span class="azb">ا</span></td><td><span class="azb">ه</span></td><td>U+0627 / U+0647</td><td><span class="azb" lang="azb">ال، دده، ننه</span></td></tr>
+  <tr><td>E e</td><td><span class="azb">ائ</span></td><td><span class="azb">ئ</span></td><td>U+0626</td><td><span class="azb" lang="azb">ائو، گئتمک، یئ، دئ</span></td></tr>
+  <tr><td>Ö ö</td><td><span class="azb">اؤ</span></td><td><span class="azb">ؤ</span></td><td>U+0624</td><td><span class="azb" lang="azb">اؤرنک، گؤن، اؤلکه</span></td></tr>
+  <tr><td>Ü ü</td><td><span class="azb">اۆ</span></td><td><span class="azb">ۆ</span></td><td>U+06C6</td><td><span class="azb" lang="azb">اۆچ، گۆن، دۆنن</span></td></tr>
+  <tr><td>İ i</td><td><span class="azb">ای</span></td><td><span class="azb">ی</span></td><td>U+06CC</td><td><span class="azb" lang="azb">ایکی، بیز، دلی</span></td></tr>
+  <tr><td>I ı</td><td><span class="azb">اؽ</span></td><td><span class="azb">ؽ</span></td><td>U+0627+U+063D / U+063D</td><td><span class="azb" lang="azb">اؽلدیریم، قؽز، دؽرناق، آیؽ</span></td></tr>
 </table>
+<div class="warn"><strong>Iı is not the same as İi.</strong>
+<span class="azb">ؽ</span> (U+063D) is the dedicated Iı letter, but it is <strong>not the normal running-text spelling</strong>.
+The 2001 manual says the Iı mark does not normally need to be written — use it only for teaching, foreign words,
+folklore, dictionary titles, or where the spelling must be clarified, or when the user explicitly asks.
+Thus ordinary prose may use <span class="azb" lang="azb">آغیز، قاییق، ایشیغیدیر</span>.
+Do not “correct” user text that already follows the booklet's printed running forms unless asked to normalize.<br>
+Hard substitutions: O is <span class="azb">وْ</span> not DAMMA; U is <span class="azb">ۇ</span> not DAMMA nor bare
+<span class="azb">و</span> in first syllable; Ö is <span class="azb">ؤ</span>; Ü is <span class="azb">ۆ</span>;
+E in native Turkic is <span class="azb">ئ</span>; İ/Y is Farsi Yeh <span class="azb">ی</span> U+06CC never Arabic Yeh
+<code>ي</code> U+064A; K is <span class="azb">ک</span> U+06A9 never <code>ك</code>; G is <span class="azb">گ</span> U+06AF;
+H is <span class="azb">ه</span> U+0647; ZWNJ is U+200C.</div>
+
+<h3>3.1 Vowel-mark modes (one mode per text, default = standard)</h3>
+<ul>
+  <li><strong>Ordinary running text (default).</strong> Light spelling; do <strong>not</strong> write <span class="azb">ؽ / اؽ</span> routinely. Example: <span class="azb" lang="azb">آغیز، قاییق، ایشیغیدیر</span>.</li>
+  <li><strong>Iı clarification mode.</strong> Dedicated <span class="azb">ؽ / اؽ</span> only when Iı vs İ would otherwise be unclear, or for teaching / dictionary / documentation. Examples: <span class="azb" lang="azb">قؽز، دؽرناق، اؽلدیریم</span>.</li>
+  <li><strong>Marked / primer mode.</strong> When explicitly asked for teaching/primer/folklore marking, write fuller marks (<span class="azb" lang="azb">گؤرۆنۆش، اوْغۇز، دۆیۆن</span>).</li>
+</ul>
+<p>Word-initial Turkic Iı can be <span class="azb">اؽ</span> in clarification/marked spelling, but do not force it into ordinary prose. Words that are actually İ stay <span class="azb">ای</span>: <span class="azb" lang="azb">ایراق، ایلان، اینام</span>.</p>
+
 <p>Consonants:
 <span class="azb" lang="azb">ب پ ت ج چ خ د ر ز ژ س ش غ ق ف ک گ ل م ن ه و ی</span>
 — with <span class="azb">ی</span> always U+06CC and <span class="azb">ک</span> always U+06A9.
-Letters <span class="azb">ط ث ص ظ ذ ض ح ع</span> appear <strong>only</strong> in Arabic-origin
-(sometimes Persian) words, never in native Turkic words.</p>
+Parenthesized Arabic letters appear <strong>only</strong> in Arabic-origin (sometimes Persian) words, never in native Turkic:</p>
+<ul>
+  <li><span class="azb">ط ث ص ظ ذ ض ح ع</span></li>
+  <li>Native: <span class="azb" lang="azb">سالماق، سوْن، ساققال، ترلان، توْیوق، اوْتاق، ماهنی</span> (not <span class="azb">صالماق، طرلان، ماحنی</span>)</li>
+  <li><span class="azb">ع</span> is kept in Arabic-origin words (<span class="azb" lang="azb">عشق، علم، احسان، مۆعلّیم، مۆعاصیر، منافع</span>) and frozen Arabic phrases — not limited to frozen phrases. Native Turkic never takes <span class="azb">ع</span>. Example: <span class="azb">علی</span> stays <span class="azb">علی</span>, not <span class="azb">الی</span>.</li>
+</ul>
+
+<h3>3.2 Auxiliary marks</h3>
+<ul>
+  <li>FATHA <code>َ</code> U+064E — only to disambiguate unwritten Ə (<span class="azb">اَیری، دَیَر، دَوه</span>)</li>
+  <li>KASRA <code>ِ</code> U+0650 — only for E in foreign words when confusion is likely (<span class="azb">اِلِمِنت، تِست</span>)</li>
+  <li>SHADDA <code>ّ</code> U+0651 — Arabic-origin only</li>
+  <li>FATHATAN <code>ً</code> U+064B — Arabic tanvin only (<span class="azb">مثلاً</span>)</li>
+  <li>SUKUN <code>ْ</code> U+0652 — part of O (<span class="azb">سوْن</span>)</li>
+  <li>HAMZA — §8 table only</li>
+</ul>
 
 <h2>4. Alphabet comparison: Türkiye's Turkish vs North vs South</h2>
 <table>
@@ -112,7 +203,7 @@ Letters <span class="azb">ط ث ص ظ ذ ض ح ع</span> appear <strong>only</st
   <tr><td>A a</td><td>A a</td><td><span class="azb">آ / ا</span></td></tr>
   <tr><td>—</td><td>Ə ə</td><td><span class="azb">ا / ه</span></td></tr>
   <tr><td>E e</td><td>E e</td><td><span class="azb">ائ / ئ</span></td></tr>
-  <tr><td>I ı</td><td>I ı</td><td><span class="azb">اؽ / ؽ</span></td></tr>
+  <tr><td>I ı</td><td>I ı</td><td><span class="azb">اؽ / ؽ</span> (clarification only; omitted in ordinary prose)</td></tr>
   <tr><td>İ i</td><td>İ i</td><td><span class="azb">ای / ی</span></td></tr>
   <tr><td>O o</td><td>O o</td><td><span class="azb">اوْ / وْ</span></td></tr>
   <tr><td>Ö ö</td><td>Ö ö</td><td><span class="azb">اؤ / ؤ</span></td></tr>
@@ -124,26 +215,114 @@ Letters <span class="azb">ط ث ص ظ ذ ض ح ع</span> appear <strong>only</st
 
 <h2>5. Core spelling rules (with right vs wrong)</h2>
 <div class="grid">
-<div class="card"><strong>Ə — write sparingly.</strong> Initial <span class="azb">ا</span>,
-morpheme-final <span class="azb">ه</span>, omitted mid-morpheme.<br>
-<span class="ok">دلی، گلمک، گؤزل</span> <span class="bad">not ده‌لی، گه‌لمه‌ک، گؤزه‌ل</span></div>
-<div class="card"><strong>E next to Y is always written.</strong><br>
-<span class="ok azb" lang="azb">مئیل، قئید</span> <span class="bad">not میل، قید</span></div>
+<div class="card"><strong>Ə — write sparingly (§2.1).</strong> Initial <span class="azb">ا</span>,
+end-of-morpheme/syllable <span class="azb">ه</span>, omitted mid-morpheme.<br>
+<span class="ok">دلی، گلمک، گؤزل</span> <span class="bad">not ده‌لی، گه‌لمه‌ک، گؤزه‌ل</span><br>
+<span class="meta">Cut morphemes/syllables first. One-syllable words ending in Ə write it: <span class="azb">نه، ده</span>.
+Keep root stable: <span class="azb">گل / گلن / گلنیم</span>. If ambiguous, add FATHA: <span class="azb">اَیری، دَیَر</span>.</span></div>
+<div class="card"><strong>E next to Y is always written (§2.2).</strong><br>
+<span class="ok azb" lang="azb">مئیل، قئید، سئیر، گۆنئی</span> <span class="bad">not میل، قید، شی</span><br>
+<span class="meta">Native Turkic: always <span class="azb">ئ / ائ</span> (<span class="azb">گئتمک، دئدیم</span>). Loans normally omit E except this closed exception.</span></div>
 <div class="card"><strong>O/U/Ö/Ü are four codepoints.</strong><br>
-<span class="ok azb" lang="azb">سوْن، بۇروق، گؤن، گۆن</span></div>
-<div class="card"><strong>Rare ı = <span class="azb">ؽ</span> (U+063D).</strong><br>
-<span class="ok azb" lang="azb">قؽز</span> <span class="bad">not قیز</span></div>
-<div class="card"><strong>Intervocalic k→g, İ–İ glide→g.</strong><br>
-<span class="ok azb" lang="azb">چؤرگیم، ایگید</span></div>
+<span class="ok azb" lang="azb">سوْن، بۇروق، گؤن، گۆن</span> <span class="bad">not سون، بوروق، ترک</span><br>
+<span class="meta">Keep documented double-waw after Ö: <span class="azb">دؤولت، شؤوکت، دؤوران</span>.</span></div>
+<div class="card"><strong>Iı = <span class="azb">ؽ</span> only in clarification mode.</strong><br>
+<span class="ok azb" lang="azb">قؽز (marked)</span> <span class="bad">not routine ؽ in ordinary prose; never قیز for قؽز when contrast matters</span></div>
+<div class="card"><strong>Yumşaq g — closed class only (§3/5).</strong><br>
+<span class="ok azb" lang="azb">ایگید، ایگیرمی، چیگین، گتیردیگیم</span>
+<span class="bad">not ایگده for اییده; not گؤگرچین، گؤک، دگیرمان</span></div>
+<div class="card"><strong>Intervocalic k→g keeps root visible.</strong><br>
+<span class="ok azb" lang="azb">چؤرگیم، گله‌جگیم، گؤروندوگو</span>
+<span class="bad">not چؤره‌ییم، گؤروندویو</span></div>
 <div class="card"><strong>Shadda/tanvin only in Arabic loans.</strong><br>
-<span class="ok azb" lang="azb">ادبیّات، مثلاً</span> <span class="bad">not چاقّال (→ <span class="azb">چاققال</span>)</span></div>
+<span class="ok azb" lang="azb">ادبیّات، مثلاً</span> <span class="bad">not چاقّال (→ <span class="azb">چاققال</span>)</span><br>
+<span class="meta">Turkic doubles the letter: <span class="azb">چاققال، ائششک، دوْققوز</span>. European: <span class="azb">اوْتللوْ</span>.</span></div>
 <div class="card"><strong>SP/ST… loans take <span class="azb">ای</span>.</strong><br>
-<span class="ok azb" lang="azb">ایسپورت، خیاوان</span> <span class="bad">not اسپورت، خییاوان</span></div>
-<div class="card"><strong>Suffix ZWNJ (U+200C) is normative.</strong><br>
-<span class="ok azb" lang="azb">تانری‌نین، آذربایجان‌شۆناس</span></div>
+<span class="ok azb" lang="azb">ایسپورت، ایستالین، خیاوان</span> <span class="bad">not اسپورت، خییاوان</span><br>
+<span class="meta">Only SP ST ŞP ŞT SK. Do not prepend to <span class="azb">پلان، پروگرام</span> — unsettled.</span></div>
 </div>
 
-<h2>6. South accent &amp; vocabulary</h2>
+<h3>5.1 Consonant details (§3–§5)</h3>
+<ul>
+  <li>V = bare <span class="azb">و</span>. H = bare <span class="azb">ه</span> (<span class="azb">همیشه، آللاه</span>; native never <span class="azb">ح</span>). Y = bare <span class="azb">ی</span> (<span class="azb">یایلیق، بایرام، آی</span>).</li>
+  <li>Thick European K = <span class="azb">ک</span> not <span class="azb">ق</span>: <span class="azb">دوْکتور، دموْکراسی</span>.</li>
+  <li>Final Arabic <span class="azb">ع</span> pronounced H = <span class="azb">ح</span>: <span class="azb">ماتاح، طاماح</span>. Medial = <span class="azb">ه</span>: <span class="azb">فهله</span>.</li>
+  <li>Foreign <span class="azb">غ</span> pronounced Q stays <span class="azb">غ</span>: <span class="azb">غریب، غزل، غم</span>. Persian <span class="azb">گ</span> pronounced Q stays <span class="azb">گ</span>: <span class="azb">کارگاه، دانیشگاه</span>.</li>
+  <li>European loans follow French reading: <span class="azb">رداکسیوْن، ناسیونال، انرژی</span>. Latin G that is Q in Latin Azerbaijani = <span class="azb">ق</span>: <span class="azb">اوْرتوقرافی، قرامر</span>. European ae = <span class="azb">آی</span>: <span class="azb">آیروپورت</span>.</li>
+  <li>Otherwise phoneticize with Turkic vowels: <span class="azb" lang="azb">مۆشکول، ایستیقلال، اینسان، مۆعاصیر، ورزیش، تلویزیون</span> (not <span class="azb">مشکل، استقلال، ورزش</span>).</li>
+  <li>Nativized loans are a list, not a converter: <span class="azb">مۇغایات، هامبال، باریت، مؽزی، آبیر، آمبار، قایدا، طایفا، فایدا</span>.</li>
+</ul>
+
+<h2>6. Suffixes — MUST attach vs MUST ZWNJ vs MAY ZWNJ</h2>
+<div class="card">
+<p>ZWNJ = <code>‌</code> U+200C. Never replace a prescribed ZWNJ with a space. Never insert ZWNJ where the booklet attaches.</p>
+<ul>
+  <li><strong>MUST attach (no ZWNJ, no space):</strong> ordinary suffixes. <span class="azb" lang="azb">گلمیشم، گلدیلر، ائللر، گؤزلدیر، اینسانلار، گۆنشلر</span> (not <span class="azb">اینسان‌لار</span>).</li>
+  <li><strong>MUST distinguish <span class="azb">دا/ده</span>:</strong> suffix → attach (<span class="azb">منده‌دیر</span>); independent “also” → space (<span class="azb" lang="azb">حسن ده گلدی، من ده</span>).</li>
+  <li><strong>MUST write <span class="azb">می/مو</span> as juxtaposition, never space:</strong> middle → ZWNJ (<span class="azb">گلدی‌می؟ گئتدی‌می؟</span>); end → side-by-side with ZWNJ (<span class="azb">نه‌سن؟</span> not <span class="azb">نه سن</span>).</li>
+  <li><strong>MUST ZWNJ before suffixes with a linking consonant</strong> (§8/4: <span class="azb">نین/نؽن، یه/یا، ییک/یؽق، ییر/یؽر، یئف، یئوا</span>):<br>
+  <span class="azb" lang="azb">موسیقی‌سی، ننه‌نین، علی‌یه، ماهنی‌یا، تانری‌نین، تانری‌یا، یئری‌ییر، تقی‌یئف</span><br>
+  Wrong: <span class="azb">تانرینین، تانرییا، یئریییر</span>.</li>
+  <li><strong>MAY ZWNJ:</strong> 4+ syllables after vowel-final morpheme (<span class="azb">مۇسیقی‌چیلر، بیزیمکی‌لر</span>);
+  same/similar consonant ×3 (<span class="azb">سس‌سیز</span>);
+  same letter at joint where first joins from right (<span class="azb">نسیل‌لر، منیم‌میش، دیل‌لنمک</span>);
+  if it does not join from right, attach left (<span class="azb">اللر، داممیش، گؤللنمک</span>).</li>
+  <li><strong>MUST attach — borrowed formatives (a):</strong> <span class="azb">کار، خانا، دار، گاه، کده، بئ، پاز، باز، بر، جو، ایزم، پئش، کش، گر، زده، خواه، نامه، زن، خوْر، دان، یستان، زادا، سن، هم، اوْف، اوْوا</span><br>
+  <span class="azb" lang="azb">صنعتکار، کیتابخانا، دانیشگاه، پئشواز، غربزده، حسنوف، حسنوْوا</span></li>
+  <li><strong>MUST ZWNJ — borrowed formatives (b):</strong> <span class="azb">شۆناس، پرست، طلب، فۆرۇش، آنتی، پرور، پان</span><br>
+  <span class="azb" lang="azb">آذربایجان‌شۆناس، وطن‌پرست، شؤهرت‌طلب، آنتی‌کوْمونیست</span> (not <span class="azb">آذربایجانشۆناس</span>).</li>
+</ul>
+</div>
+
+<h2>7. Compounds, hamza, names &amp; numbers</h2>
+<h3>7.1 Compounds and phrases</h3>
+<ul>
+  <li>Native compounds: parts independent, juxtaposed with ZWNJ, no space: <span class="azb" lang="azb">آغ‌ساققال، آغ‌بیرچک، ککلیک‌اوْتو، ایت‌بۇرنو</span>. Do not force ZWNJ into booklet solids: <span class="azb">قانۇنااۇیغونلوق، گؤزوگؤتورمزلیک</span>.</li>
+  <li>Foreign compounds: same, ZWNJ: <span class="azb">مؤهنت‌افزا، دیل‌آرام، وطن‌پرست</span>.</li>
+  <li>Persian constructs where a part has standalone meaning: hyphen: <span class="azb">سیمای-شمس، غیر-مۆمکون، ضیدّ-اینقیلاب</span>.</li>
+  <li>Borrowed <span class="azb">و</span>: as-is or with Ü: <span class="azb">گشت و گۆذار</span> / <span class="azb">گشت ۆ گۆذار</span>.</li>
+  <li>Frozen Arabic phrases keep original spelling: <span class="azb">علی‌الخصوص، انشاالله، ماشاالله، الی‌آخر</span>.</li>
+</ul>
+
+<h3>7.2 Hamza (§8)</h3>
+<table>
+  <tr><th>Environment</th><th>Form</th><th>Examples</th></tr>
+  <tr><td>Word-final silent hamza after Ə</td><td><span class="azb">أ</span></td><td><span class="azb" lang="azb">منشأ، مبدأ، ملجأ</span></td></tr>
+  <tr><td>After U</td><td><span class="azb">ء</span></td><td><span class="azb" lang="azb">سۇء</span></td></tr>
+  <tr><td>After A, silent</td><td>omit</td><td><span class="azb" lang="azb">اینشا، ایملا، ایجرا، انبیا</span></td></tr>
+  <tr><td>Voiced with A</td><td><span class="azb">آ</span></td><td><span class="azb" lang="azb">سۇال، مبدآت، اینشاآت</span></td></tr>
+  <tr><td>Voiced with Ə</td><td><span class="azb">أ</span></td><td><span class="azb" lang="azb">جۆرأت، تأسّوف، هئیأت، مسأله</span></td></tr>
+  <tr><td>That Ə is word-final</td><td><span class="azb">ئ</span></td><td><span class="azb" lang="azb">نشئه، تؤوطیئه</span></td></tr>
+  <tr><td>Voiced with İ</td><td><span class="azb">ی</span></td><td><span class="azb" lang="azb">رییس، ایسراییل، کایینات</span></td></tr>
+  <tr><td>Voiced with O/U/E</td><td><span class="azb">ئ</span></td><td><span class="azb" lang="azb">ناپلئون، سۇئد، مسئۇل</span></td></tr>
+  <tr><td>After E</td><td><span class="azb">ئ</span></td><td><span class="azb" lang="azb">تئاتر، رئال، پروتئین</span></td></tr>
+  <tr><td>After Ö/Ü</td><td>omit</td><td><span class="azb" lang="azb">مؤمین، لؤلؤ، مۆدّب</span></td></tr>
+  <tr><td>Possessive on منشأ / مبدأ</td><td>keep <span class="azb">أ + یی</span></td><td><span class="azb" lang="azb">منشأیی، مبدأیی</span></td></tr>
+</table>
+<p><span class="azb">هئیأت</span> is the common noun. The personal name in §12 may stay <span class="azb">هیئت</span>.</p>
+
+<h3>7.3 Names, geography, numbers (§11)</h3>
+<ul>
+  <li>Non-nativized Persian/Arabic personal names keep original spelling: <span class="azb" lang="azb">محمّد، حسین، ابوالقاسم، منوچهر، هیئت</span>.</li>
+  <li>Nativized names are a separate list and <em>may</em> use azb spelling: <span class="azb" lang="azb">علسگر، فاطما، حۆسئن، ایرضا، ممّد</span>. Do not auto-convert every name.</li>
+  <li>Geography as used in Iran, adapted where possible: <span class="azb" lang="azb">لهیستان، اؤزبکیستان، هیندوستان، لۆبنان، اوْتریش، تۆرکیه، کۆردوستان</span>.</li>
+  <li>Distorted place names: restore when possible: <span class="azb" lang="azb">تۇفارقان، سئییدآوا، سایین قالا، سۇلدوز، آخما قایا</span>.</li>
+  <li>Turkic words used in Persian: azb spelling: <span class="azb" lang="azb">بوْشقاب، اۆتو، اۇمود، قۇلدور</span>.</li>
+  <li>Numbers: digit + hyphen + suffix. Do not invent extra spellings.</li>
+</ul>
+<table>
+  <tr><th>Function</th><th>Forms</th></tr>
+  <tr><td>Ordinal</td><td>۲-جی، ۳-جو، ۶-جی، ۹-جو، ۱۳۷۹-جو ایل</td></tr>
+  <tr><td>Accusative</td><td>۱۱-ی، ۱۲-نی، ۱۳-ۆ، ۶-نی</td></tr>
+  <tr><td>Locative</td><td>۱۱-ده، ۱۲-ده، ۶-دا، ۹-دا</td></tr>
+  <tr><td>Dative</td><td>۱۱-ه، ۱۲-یه، ۶-یا، ۹-ا</td></tr>
+  <tr><td>Ablative</td><td>۱۱-دن، ۱۲-دن، ۶-دان، ۹-دان</td></tr>
+  <tr><td>Genitive</td><td>۱۱-ین، ۱۲-نین، ۴-ۆن، ۵-ین</td></tr>
+  <tr><td>Possessive</td><td>۱۱-ی، ۱۲-سی، ۹-و، ۷-سی</td></tr>
+</table>
+<p><span class="azb" lang="azb">ساعات ۱۱-ده</span>، <span class="azb" lang="azb">۱۲-یه خبر وئرین</span>، <span class="azb" lang="azb">خۇردادین ۷-سی</span>.</p>
+
+<h2>8. South accent &amp; vocabulary (policy — not seminar orthography)</h2>
 <div class="card">
 <ul>
   <li>Answer in the <strong>South (Tabriz) accent</strong> — where forms differ, the South form wins.
@@ -152,21 +331,61 @@ morpheme-final <span class="azb">ه</span>, omitted mid-morpheme.<br>
   <li><strong>Never</strong> Russian-origin or North-specific everyday loans — use the South equivalent.</li>
   <li>Prefer Turkic words over Persian/Arabic loans <strong>only where still clear</strong>;
       keep the loan where replacement would turn obscure. Intelligibility wins.</li>
+  <li>Apply only when generating / translating free South prose — not when normalizing, quoting, or keeping a given word.</li>
 </ul>
 </div>
 
-<h2>7. Hamza, names &amp; numbers (highlights)</h2>
+<h2>9. Unsettled — do not invent (§12)</h2>
 <ul>
-  <li>Hamza by context: <span class="azb" lang="azb">منشأ، سۇئد، رییس، اینشا، هئیأت، مؤمین، تئاتر</span>.</li>
-  <li>Personal names: keep original (<span class="azb">محمّد، حسین</span>) unless nativized
-      (<span class="azb">علسگر، فاطما</span>).</li>
-  <li>Numbers take hyphenated suffixes: ۲-جی، ۳-جو، ۱۱-ده، ۱۲-یه.</li>
+  <li><span class="azb">واو معدوله</span> (deferred by the seminar)</li>
+  <li>Foreign initial clusters outside SP ST ŞP ŞT SK, including <span class="azb">پلان، پروگرام، کرونولوژی</span></li>
+  <li>Unlisted nativized loans (promised to an orthography dictionary)</li>
+  <li>Abbreviations (<span class="azb">قیسالتمالار</span> was a seminar topic, not a published rule set)</li>
 </ul>
+<p>If asked to settle one of these, state that the 2001 decisions left it open.</p>
+
+<h2>10. Pre-output checklist + minimal targets</h2>
+<ol>
+  <li>Class the word. Apply only that class's rules.</li>
+  <li>Cut morphemes and syllables <strong>before</strong> spelling Ə.</li>
+  <li>Word-initial vowel uses the carrier form.</li>
+  <li>Glyphs: <span class="azb">وْ ۇ ؤ ۆ ئ ؽ ی ک</span>. <span class="azb">ؽ</span> is marked/clarifying Iı, not default. Scan for <code>ي</code>, <code>ك</code>, unintended <span class="azb">ؽ</span> overuse.</li>
+  <li>E next to Y is written. Ə is not written as <span class="azb">ئ</span>.</li>
+  <li>Yumşaq g and intervocalic <span class="azb">ک→گ</span> only in §5 environments.</li>
+  <li><span class="azb">ع ح ط ض ظ ذ ث ص</span> only in the right loan class — but do not strip <span class="azb">ع</span> from Arabic loans.</li>
+  <li>Hamza / tashdid / tanvin from §7–§8 only.</li>
+  <li>Suffixes: attach vs ZWNJ vs space by §9. <span class="azb">می/مو</span> never uses a space.</li>
+  <li>Do not analogize unlisted nativized words. If the booklet has no rule, do not fabricate one.</li>
+</ol>
+<p>Minimal targets:
+<span class="azb" lang="azb">یار بیزه قوْناق گله‌جک.</span> ·
+<span class="azb" lang="azb">حالال چؤرگیم بۇ سۆفره‌نین ایشؽغؽدؽر.</span> ·
+<span class="azb" lang="azb">هر گلنی قارداش تانیمازلار.</span> ·
+<span class="azb" lang="azb">آتام بۇ آخشام تبریزدن گله‌جک.</span> ·
+<span class="azb" lang="azb">عاراقچینین منده‌دیر. / حسن ده گلدی، من ده.</span> ·
+<span class="azb" lang="azb">تانری‌نین آدییلا. / تانری‌یا یالوارماق.</span> ·
+<span class="azb" lang="azb">هئیأت، جۆرأت، مسأله، رییس، اینشا، منشأ</span> ·
+<span class="azb" lang="azb">اینسانلار</span> not <span class="azb">اینسان‌لار</span> ·
+<span class="azb" lang="azb">آذربایجان‌شۆناس</span> not <span class="azb">آذربایجانشۆناس</span>
+</p>
+
+<h2>11. Get the skill</h2>
+<div class="card">
+<p>This page is a human-readable mirror of <code>SKILL.md</code>. The machine-readable skill lives in the GitHub repo.</p>
+<div class="btn-row">
+  <a class="btn" href="https://github.com/arazgray/azerbaijani-turkic-azb-ai-skill/">Open GitHub Repo</a>
+  <a class="btn secondary" href="https://raw.githubusercontent.com/arazgray/azerbaijani-turkic-azb-ai-skill/main/SKILL.md" download>Download SKILL.md</a>
+  <a class="btn secondary" href="https://github.com/arazgray/azerbaijani-turkic-azb-ai-skill/archive/refs/heads/main.zip">Download .zip</a>
+</div>
+<pre><code>git clone https://github.com/arazgray/azerbaijani-turkic-azb-ai-skill.git</code></pre>
+<p class="meta">Files: <code>SKILL.md</code> (skill) · <code>README.md</code> (overview in azb) · <code>Yazı-Quralları-AZB.html</code> (2001 booklet) · <code>index.html</code> (this page) · MIT License.</p>
+</div>
 
 </main>
 <footer>
   <p>Source: <em>Türk Dili Yazı Quralları</em> (Tehran, 2001) — see <code>Yazı-Quralları-AZB.html</code>.
      Machine-readable skill: <code>SKILL.md</code>. Overview: <code>README.md</code>.</p>
+  <p><a href="https://github.com/arazgray/azerbaijani-turkic-azb-ai-skill/">github.com/arazgray/azerbaijani-turkic-azb-ai-skill</a> · MIT © 2026 Araz Gray</p>
 </footer>
 </body>
 </html>
